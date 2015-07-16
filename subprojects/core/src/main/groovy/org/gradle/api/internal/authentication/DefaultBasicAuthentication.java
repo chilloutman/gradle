@@ -23,7 +23,7 @@ import org.gradle.api.credentials.Credentials;
 import java.util.HashSet;
 import java.util.Set;
 
-public class DefaultBasicAuthentication implements BasicAuthentication {
+public class DefaultBasicAuthentication implements BasicAuthentication, AuthenticationInternal {
     @Override
     public Set<Class<? extends Credentials>> getSupportedCredentials() {
         Set<Class<? extends Credentials>> supported = new HashSet<Class<? extends Credentials>>();

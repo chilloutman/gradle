@@ -16,10 +16,8 @@
 
 package org.gradle.api.authentication;
 
-import org.gradle.api.internal.authentication.AuthenticationInternal;
-
 /**
  * Authentication protocol for digest access authentication over HTTP.
  */
-public interface DigestAuthentication extends AuthenticationInternal {
+public interface DigestAuthentication extends Authentication {
 }
