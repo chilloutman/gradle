@@ -22,6 +22,7 @@ import org.gradle.api.authentication.BasicAuthentication;
 import org.gradle.api.authentication.DigestAuthentication;
 import org.gradle.api.credentials.AwsCredentials;
 import org.gradle.api.credentials.Credentials;
+import org.gradle.api.internal.authentication.AuthenticationInternal;
 import org.gradle.api.internal.authentication.DefaultBasicAuthentication;
 import org.gradle.api.internal.authentication.DefaultDigestAuthentication;
 import org.gradle.internal.Cast;
@@ -69,10 +70,12 @@ public abstract class AbstractAuthenticationSupportedRepository extends Abstract
             throw new IllegalStateException("Can not use credentials(Action) method when not using PasswordCredentials; please use credentials(Class, Action)");
         }
         credentials(PasswordCredentials.class, action);
+        populateAuthenticationCredentials();
     }
 
     public <T extends Credentials> void credentials(Class<T> credentialsType, Action<? super T> action) throws IllegalStateException {
         action.execute(getCredentials(credentialsType));
+        populateAuthenticationCredentials();
     }
 
     private <T extends Credentials> T setCredentials(Class<T> clazz) {
@@ -101,6 +104,13 @@ public abstract class AbstractAuthenticationSupportedRepository extends Abstract
 
     private <T extends Authentication> T newAuthentication(Class<T> clazz) {
         return instantiator.newInstance(getAuthenticationImplType(clazz));
+    }
+
+    private void populateAuthenticationCredentials() {
+        // TODO: This will have to be changed when we support setting credentials directly on the authentication
+        for (Authentication authentication : authenticationProtocols) {
+            ((AuthenticationInternal)authentication).setCredentials(getConfiguredCredentials());
+        }
     }
 
     // Mappings between public and impl types

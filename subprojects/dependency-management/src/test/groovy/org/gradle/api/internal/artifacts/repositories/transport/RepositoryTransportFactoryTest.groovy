@@ -21,7 +21,7 @@ import org.gradle.api.InvalidUserDataException
 import org.gradle.api.artifacts.repositories.PasswordCredentials
 import org.gradle.api.credentials.Credentials
 import org.gradle.api.internal.artifacts.repositories.DefaultPasswordCredentials
-import org.gradle.api.internal.authentication.AuthenticationInternal
+import org.gradle.api.internal.authentication.AbstractAuthentication
 import org.gradle.internal.credentials.DefaultAwsCredentials
 import org.gradle.internal.resource.connector.ResourceConnectorFactory
 import org.gradle.internal.resource.transport.ResourceConnectorRepositoryTransport
@@ -132,21 +132,21 @@ class RepositoryTransportFactoryTest extends Specification {
         ex.message == "You cannot configure authentication protocols for a repository if no credentials are provided."
     }
 
-    private class GoodCredentialsAuthentication implements AuthenticationInternal {
+    private class GoodCredentialsAuthentication extends AbstractAuthentication {
         @Override
         Set<Class<? extends Credentials>> getSupportedCredentials() {
             return ([GoodCredentials] as Set)
         }
     }
 
-    private class BadCredentialsAuthentication implements AuthenticationInternal {
+    private class BadCredentialsAuthentication extends AbstractAuthentication {
         @Override
         Set<Class<? extends Credentials>> getSupportedCredentials() {
             return ([BadCredentials] as Set)
         }
     }
 
-    private class NoCredentialsAuthentication implements AuthenticationInternal {
+    private class NoCredentialsAuthentication extends AbstractAuthentication {
         @Override
         Set<Class<? extends Credentials>> getSupportedCredentials() {
             return ([] as Set)
